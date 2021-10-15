@@ -328,3 +328,8 @@ func (c *Client) NewGetBalanceService() *GetBalanceService {
 func (c *Client) NewGetPositionService() *GetPositionService {
 	return &GetPositionService{c: c}
 }
+
+// NewCreateOrderService
+func (c *Client) NewCreateOrderService() *CreateOrderService {
+	return &CreateOrderService{c: c}
+}
