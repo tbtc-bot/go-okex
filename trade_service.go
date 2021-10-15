@@ -68,11 +68,41 @@ func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 	return res, nil
 }
 
-// // Set currency ccy
-// func (s *GetBalanceService) Currencies(ccy string) *GetBalanceService {
-// 	s.ccy = ccy
-// 	return s
-// }
+// set Currency field
+func (s *CreateOrderService) Currency(ccy string) *CreateOrderService {
+	s.ccy = &ccy
+	return s
+}
+
+// set Client Order Id field
+func (s *CreateOrderService) ClientOrderId(clOrdId string) *CreateOrderService {
+	s.clOrdId = &clOrdId
+	return s
+}
+
+// set Tag field
+func (s *CreateOrderService) Tag(tag string) *CreateOrderService {
+	s.tag = &tag
+	return s
+}
+
+// set Order Price field
+func (s *CreateOrderService) OrderPrice(px string) *CreateOrderService {
+	s.px = &px
+	return s
+}
+
+// set ReduceOnly field
+func (s *CreateOrderService) ReduceOnly(reduceOnly bool) *CreateOrderService {
+	s.reduceOnly = &reduceOnly
+	return s
+}
+
+// set Quantity Type field
+func (s *CreateOrderService) QuantityType(tgtCcy string) *CreateOrderService {
+	s.tgtCcy = &tgtCcy
+	return s
+}
 
 // Ordets structure
 

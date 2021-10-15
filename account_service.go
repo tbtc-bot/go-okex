@@ -9,7 +9,7 @@ import (
 // START GET BALANCE CODE
 type GetBalanceService struct {
 	c   *Client
-	ccy string
+	ccy *string
 }
 
 // Do send request
@@ -19,6 +19,11 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 		endpoint: "/api/v5/account/balance",
 		secType:  secTypeSigned,
 	}
+
+	if s.ccy != nil {
+		r.setParam("ccy", *s.ccy)
+	}
+
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
 		return nil, err
@@ -33,7 +38,7 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 // Set currency ccy
 func (s *GetBalanceService) Currencies(ccy string) *GetBalanceService {
-	s.ccy = ccy
+	s.ccy = &ccy
 	return s
 }
 
@@ -88,9 +93,9 @@ type Balances struct {
 // GetBalanceService
 type GetPositionService struct {
 	c        *Client
-	instType string
-	instId   string
-	posId    string
+	instType *string
+	instId   *string
+	posId    *string
 }
 
 // Do send request
@@ -100,6 +105,17 @@ func (s *GetPositionService) Do(ctx context.Context, opts ...RequestOption) (res
 		endpoint: "/api/v5/account/positions",
 		secType:  secTypeSigned,
 	}
+
+	if s.instType != nil {
+		r.setParam("instType", *s.instType)
+	}
+	if s.instId != nil {
+		r.setParam("instId", *s.instId)
+	}
+	if s.posId != nil {
+		r.setParam("posId", *s.posId)
+	}
+
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
 		return nil, err
@@ -114,19 +130,19 @@ func (s *GetPositionService) Do(ctx context.Context, opts ...RequestOption) (res
 
 // Set Instrument Type
 func (s *GetPositionService) InstrumentType(instType string) *GetPositionService {
-	s.instType = instType
+	s.instType = &instType
 	return s
 }
 
 // Set Instrument Id
 func (s *GetPositionService) InstrumentId(instId string) *GetPositionService {
-	s.instId = instId
+	s.instId = &instId
 	return s
 }
 
 // Set Position Id
 func (s *GetPositionService) PositionId(posId string) *GetPositionService {
-	s.posId = posId
+	s.posId = &posId
 	return s
 }
 
