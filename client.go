@@ -190,6 +190,7 @@ func NewClient(apiKey, secretKey, passPhrase string) *Client {
 		UserAgent:  "Huobi/golang",
 		HTTPClient: http.DefaultClient,
 		Logger:     log.New(os.Stderr, "Huobi-golang ", log.LstdFlags),
+		Debug:      true,
 	}
 }
 
@@ -245,8 +246,13 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 		header.Set("OK-ACCESS-TIMESTAMP", timestamp)
 	}
 
+	path := r.endpoint
+	if queryString != "" {
+		path = fmt.Sprintf("%s?%s&", r.endpoint, queryString)
+	}
+	c.debug("path:" + path)
 	if r.secType == secTypeSigned {
-		raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, r.endpoint, bodyString)
+		raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, bodyString)
 		mac := hmac.New(sha256.New, []byte(c.SecretKey))
 		_, err = mac.Write([]byte(raw))
 		if err != nil {

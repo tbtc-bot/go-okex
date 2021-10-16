@@ -1,3 +1,5 @@
+github.com/Shyp/bump_version v0.0.0-20180222180749-d7594d2951e2 h1:kzyZOAqtRIzHGCzBewUChDDR3oZFhUWf48oa/bS7aFk=
+github.com/Shyp/bump_version v0.0.0-20180222180749-d7594d2951e2/go.mod h1:0vH+bPVMRgm04ukVi15Io2kBMmgQWMaeQ5mfIpgBRtw=
 github.com/bitly/go-simplejson v0.5.0 h1:6IH+V8/tVMab511d5bn4M7EwGXZf9Hj6i2xSwkNEM+Y=
 github.com/bitly/go-simplejson v0.5.0/go.mod h1:cXHtHw4XUPsvGaxgjIAn8PhEWG9NfngEKAMDJEczWVA=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=

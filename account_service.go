@@ -22,6 +22,7 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 	if s.ccy != nil {
 		r.setParam("ccy", *s.ccy)
+		//r.query.Add("ccy", *s.ccy)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)
