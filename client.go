@@ -190,7 +190,7 @@ func NewClient(apiKey, secretKey, passPhrase string) *Client {
 		UserAgent:  "Huobi/golang",
 		HTTPClient: http.DefaultClient,
 		Logger:     log.New(os.Stderr, "Huobi-golang ", log.LstdFlags),
-		Debug:      true,
+		Debug:      false,
 	}
 }
 
