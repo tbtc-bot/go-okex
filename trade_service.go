@@ -23,6 +23,78 @@ type CreateOrderService struct {
 	tgtCcy     *string
 }
 
+// Set instrument Id
+func (s *CreateOrderService) InstrumentId(instId string) *CreateOrderService {
+	s.instId = instId
+	return s
+}
+
+// Set trade mode
+func (s *CreateOrderService) TradeMode(tdMode string) *CreateOrderService {
+	s.tdMode = tdMode
+	return s
+}
+
+// Set Currency
+func (s *CreateOrderService) Currency(ccy string) *CreateOrderService {
+	s.ccy = &ccy
+	return s
+}
+
+// Set Client Order Id
+func (s *CreateOrderService) ClientOrderId(clOrdId string) *CreateOrderService {
+	s.clOrdId = &clOrdId
+	return s
+}
+
+// Set Tag field
+func (s *CreateOrderService) Tag(tag string) *CreateOrderService {
+	s.tag = &tag
+	return s
+}
+
+// Set side
+func (s *CreateOrderService) Side(side string) *CreateOrderService {
+	s.side = side
+	return s
+}
+
+// Set position side
+func (s *CreateOrderService) PositionSide(posSide string) *CreateOrderService {
+	s.posSide = posSide
+	return s
+}
+
+// Set order type
+func (s *CreateOrderService) OrderType(ordType string) *CreateOrderService {
+	s.ordType = ordType
+	return s
+}
+
+// Set size
+func (s *CreateOrderService) Size(sz string) *CreateOrderService {
+	s.sz = sz
+	return s
+}
+
+// Set Order Price
+func (s *CreateOrderService) OrderPrice(px string) *CreateOrderService {
+	s.px = &px
+	return s
+}
+
+// Set ReduceOnly
+func (s *CreateOrderService) ReduceOnly(reduceOnly bool) *CreateOrderService {
+	s.reduceOnly = &reduceOnly
+	return s
+}
+
+// Set Quantity Type
+func (s *CreateOrderService) QuantityType(tgtCcy string) *CreateOrderService {
+	s.tgtCcy = &tgtCcy
+	return s
+}
+
 // Do send request
 func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res *Orders, err error) {
 	r := &request{
@@ -68,49 +140,13 @@ func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 	return res, nil
 }
 
-// set Currency field
-func (s *CreateOrderService) Currency(ccy string) *CreateOrderService {
-	s.ccy = &ccy
-	return s
-}
-
-// set Client Order Id field
-func (s *CreateOrderService) ClientOrderId(clOrdId string) *CreateOrderService {
-	s.clOrdId = &clOrdId
-	return s
-}
-
-// set Tag field
-func (s *CreateOrderService) Tag(tag string) *CreateOrderService {
-	s.tag = &tag
-	return s
-}
-
-// set Order Price field
-func (s *CreateOrderService) OrderPrice(px string) *CreateOrderService {
-	s.px = &px
-	return s
-}
-
-// set ReduceOnly field
-func (s *CreateOrderService) ReduceOnly(reduceOnly bool) *CreateOrderService {
-	s.reduceOnly = &reduceOnly
-	return s
-}
-
-// set Quantity Type field
-func (s *CreateOrderService) QuantityType(tgtCcy string) *CreateOrderService {
-	s.tgtCcy = &tgtCcy
-	return s
-}
-
-// Ordets structure
-
+// Orders structure
 type Orders struct {
 	Code string         `json:"code"`
 	Msg  string         `json:"msg"`
 	Data []*OrderDetail `json:"data"`
 }
+
 type OrderDetail struct {
 	OrdId   string `json:"ordId"`
 	ClOrdId string `json:"clOrdId"`
