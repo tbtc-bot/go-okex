@@ -2,6 +2,8 @@ package common
 
 import (
 	"bytes"
+	"encoding/json"
+	"log"
 	"math"
 	"time"
 )
@@ -29,4 +31,16 @@ func IsoTime() string {
 	isoBytes := []byte(iso)
 	iso = string(isoBytes[:10]) + "T" + string(isoBytes[11:23]) + "Z"
 	return iso
+}
+
+/*
+ struct convert json string
+*/
+func Struct2JsonString(raw interface{}) (jsonString string, err error) {
+	data, err := json.Marshal(raw)
+	if err != nil {
+		log.Println("convert json failed!", err)
+		return "", err
+	}
+	return string(data), nil
 }

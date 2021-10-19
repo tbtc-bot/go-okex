@@ -231,15 +231,21 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	timestamp := common.IsoTime()
 	queryString := r.query.Encode()
 	body := &bytes.Buffer{}
-	bodyString := r.form.Encode()
+	//bodyString := r.form.Encode()
+	bodyJson := r.bodyJson
 	header := http.Header{}
 	if r.header != nil {
 		header = r.header.Clone()
 	}
-	if bodyString != "" {
-		header.Set("Content-Type", "application/x-www-form-urlencoded")
-		body = bytes.NewBufferString(bodyString)
+	if bodyJson != nil {
+		header.Set("Content-Type", "application/json")
+		postBody, _ := json.Marshal(bodyJson)
+		body = bytes.NewBuffer(postBody)
 	}
+	// if bodyString != "" {
+	// 	header.Set("Content-Type", "application/json")
+	// 	body = bytes.NewBufferString(bodyString)
+	// }
 	if r.secType == secTypeAPIKey || r.secType == secTypeSigned {
 		header.Set("OK-ACCESS-KEY", c.APIKey)
 		header.Set("OK-ACCESS-PASSPHRASE", c.PassPhrase)
@@ -252,7 +258,8 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	}
 	c.debug("path:" + path)
 	if r.secType == secTypeSigned {
-		raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, bodyString)
+		raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, body)
+		// raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, bodyString)
 		mac := hmac.New(sha256.New, []byte(c.SecretKey))
 		_, err = mac.Write([]byte(raw))
 		if err != nil {
@@ -270,7 +277,7 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	if queryString != "" {
 		fullURL = fmt.Sprintf("%s?%s", fullURL, queryString)
 	}
-	c.debug("full url: %s, body: %s", fullURL, bodyString)
+	c.debug("full url: %s, body: %s", fullURL, bodyJson)
 
 	r.fullURL = fullURL
 	r.header = header

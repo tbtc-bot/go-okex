@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 // START GET BALANCE CODE
@@ -103,29 +104,29 @@ func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 		secType:  secTypeSigned,
 	}
 
-	r.setParam("instId", s.instId)
-	r.setParam("tdMode", s.tdMode)
-	r.setParam("side", s.side)
-	r.setParam("posSide", s.posSide)
-	r.setParam("ordType", s.ordType)
-	r.setParam("sz", s.sz)
+	r.setBodyParam("instId", s.instId)
+	r.setBodyParam("tdMode", s.tdMode)
+	r.setBodyParam("side", s.side)
+	r.setBodyParam("posSide", s.posSide)
+	r.setBodyParam("ordType", s.ordType)
+	r.setBodyParam("sz", s.sz)
 	if s.ccy != nil {
-		r.setParam("ccy", *s.ccy)
+		r.setBodyParam("ccy", *s.ccy)
 	}
 	if s.clOrdId != nil {
-		r.setParam("clOrdId", *s.clOrdId)
+		r.setBodyParam("clOrdId", *s.clOrdId)
 	}
 	if s.tag != nil {
-		r.setParam("tag", *s.tag)
+		r.setBodyParam("tag", *s.tag)
 	}
 	if s.px != nil {
-		r.setParam("px", *s.px)
+		r.setBodyParam("px", *s.px)
 	}
 	if s.reduceOnly != nil {
-		r.setParam("reduceOnly", *s.reduceOnly)
+		r.setBodyParam("reduceOnly", strconv.FormatBool(*s.reduceOnly))
 	}
 	if s.tgtCcy != nil {
-		r.setParam("tgtCcy", *s.tgtCcy)
+		r.setBodyParam("tgtCcy", *s.tgtCcy)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)

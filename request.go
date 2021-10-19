@@ -23,6 +23,7 @@ type request struct {
 	endpoint   string
 	query      url.Values
 	form       url.Values
+	bodyJson   map[string]string // new field
 	recvWindow int64
 	secType    secType
 	header     http.Header
@@ -36,6 +37,7 @@ func (r *request) addParam(key string, value interface{}) *request {
 		r.query = url.Values{}
 	}
 	r.query.Add(key, fmt.Sprintf("%v", value))
+
 	return r
 }
 
@@ -70,6 +72,16 @@ func (r *request) setFormParams(m params) *request {
 	for k, v := range m {
 		r.setFormParam(k, v)
 	}
+	return r
+}
+
+// setFormParam set param with key/value to request form body
+func (r *request) setBodyParam(key string, value string) *request {
+
+	if r.bodyJson == nil {
+		r.bodyJson = make(map[string]string)
+	}
+	r.bodyJson[key] = value
 	return r
 }
 
