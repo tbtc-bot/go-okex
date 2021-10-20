@@ -222,3 +222,95 @@ func wsPositionsServe(endpoint string, instType string, uly string, InstId strin
 	}
 	return wsServe(cfg, wsHandler, errHandler)
 }
+
+// ORDERS WEBSOCKET (PRIVATE)
+
+type WsOrdersEvent struct {
+	Arg  map[string]string `json:"arg"`
+	Data []*WsOrderDetail  `json:"data"`
+}
+
+type WsOrderDetail struct {
+	Msg             string `json:"msg"`
+	Code            string `json:"code"`
+	AmendResult     string `json:"amendResult"`
+	ReqId           string `json:"reqId"`
+	CTime           string `json:"cTime"`
+	UTime           string `json:"uTime"`
+	Category        string `json:"category"`
+	Pnl             string `json:"pnl"`
+	Rebate          string `json:"rebate"`
+	RebateCcy       string `json:"rebateCcy"`
+	Fee             string `json:"fee"`
+	FeeCcy          string `json:"feeCcy"`
+	SlOrdPx         string `json:"slOrdPx"`
+	SlTriggerPx     string `json:"slTriggerPx"`
+	TpOrdPx         string `json:"tpOrdPx"`
+	TpTriggerPx     string `json:"tpTriggerPx"`
+	Lever           string `json:"lever"`
+	AvgPx           string `json:"avgPx"`
+	State           string `json:"state"`
+	ExecType        string `json:"execType"`
+	FillFeeCcy      string `json:"fillFeeCcy"`
+	FillFee         string `json:"fillFee"`
+	FillTime        string `json:"fillTime"`
+	FillNotionalUsd string `json:"fillNotionalUsd"`
+	AccFillSz       string `json:"accFillSz"`
+	TradeId         string `json:"tradeId"`
+	FillPx          string `json:"fillPx"`
+	FillSz          string `json:"fillSz"`
+	TgtCcy          string `json:"tgtCcy"`
+	TdMode          string `json:"tdMode"`
+	PosSide         string `json:"posSide"`
+	Side            string `json:"side"`
+	OrdType         string `json:"ordType"`
+	NotionalUsd     string `json:"notionalUsd"`
+	Sz              string `json:"sz"`
+	Px              string `json:"px"`
+	Tag             string `json:"tag"`
+	ClOrdId         string `json:"clOrdId"`
+	OrdId           string `json:"ordId"`
+	Ccy             string `json:"ccy"`
+	InstId          string `json:"instId"`
+	InstType        string `json:"instType"`
+}
+
+// WsOrders handle websocket instrument message
+type WsOrdersHandler func(event *WsOrdersEvent)
+
+func WsOrdersServe(instType string, uly string, instId string, apikey string, apisecret string, passphrase string, handler WsOrdersHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true) // get private endpoint
+	return wsOrdersServe(endpoint, instType, uly, instId, apikey, apisecret, passphrase, handler, errHandler)
+}
+
+// WsAccountsServe serve websocket
+func wsOrdersServe(endpoint string, instType string, uly string, InstId string, apiKey string, secretKey string, passPhrase string, handler WsOrdersHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	arg := map[string]string{
+		"channel":  "orders",
+		"instType": instType,
+	}
+	if uly != "" {
+		arg["uly"] = uly
+	}
+	if InstId != "" {
+		arg["InstId"] = InstId
+	}
+	var args []map[string]string
+	args = append(args, arg)
+	reqData := ReqData{Op: "subscribe",
+		Args: args,
+	}
+	//fmt.Println(reqData)
+	cfg := newWsConfig(endpoint, reqData, apiKey, secretKey, passPhrase)
+	wsHandler := func(message []byte) {
+		event := new(WsOrdersEvent)
+		err = json.Unmarshal(message, event)
+		if err != nil {
+			errHandler(err)
+			return
+		}
+
+		handler(event)
+	}
+	return wsServe(cfg, wsHandler, errHandler)
+}
