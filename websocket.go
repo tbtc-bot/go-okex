@@ -2,13 +2,15 @@ package okex
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	//"github.com/gorilla/websocket"
+	. "github.com/tbtc-bot/go-okex/common"
+	. "github.com/tbtc-bot/go-okex/impl"
 	. "github.com/tbtc-bot/go-okex/interface"
 	"nhooyr.io/websocket"
-	"nhooyr.io/websocket/wsjson"
 )
 
 // WsHandler handle raw websocket message
@@ -19,14 +21,20 @@ type ErrHandler func(err error)
 
 // WsConfig webservice configuration
 type WsConfig struct {
-	Endpoint string
-	WsOp     WSReqData
+	Endpoint   string
+	WsOp       WSReqData
+	ApiKey     *string
+	SecretKey  *string
+	PassPhrase *string
 }
 
-func newWsConfig(endpoint string, wsop WSReqData) *WsConfig {
+func newWsConfig(endpoint string, wsop WSReqData, apiKey string, secretKey string, passphrase string) *WsConfig {
 	return &WsConfig{
-		Endpoint: endpoint,
-		WsOp:     wsop,
+		Endpoint:   endpoint,
+		WsOp:       wsop,
+		ApiKey:     &apiKey,
+		SecretKey:  &secretKey,
+		PassPhrase: &passphrase,
 	}
 }
 
@@ -40,11 +48,43 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		return nil, nil, err
 	}
 	c.SetReadLimit(655350)
-	err = wsjson.Write(ctx, c, []byte(cfg.WsOp.ToString()))
+
+	// send login for private channel
+	if *cfg.ApiKey != "" {
+		//timestamp := IsoTime()
+		timestamp := time.Now().Unix()
+		sign, err := Hmac256(fmt.Sprint(timestamp), "GET", "/users/self/verify", nil, *cfg.SecretKey)
+		if err != nil {
+			log.Fatal("Error authentication websocket (generating key): ", err)
+			cancel()
+		}
+		arg := map[string]string{
+			"apiKey":     *cfg.ApiKey,
+			"passphrase": *cfg.PassPhrase,
+			"timestamp":  fmt.Sprint(timestamp),
+			"sign":       sign,
+		}
+		var args []map[string]string
+		args = append(args, arg)
+		WsOp := ReqData{Op: "login",
+			Args: args,
+		}
+		err = c.Write(ctx, 1, []byte(WsOp.ToString()))
+		time.Sleep(1 * time.Second)
+		if err != nil {
+			log.Fatal("Error authenticate websocket (sending key): ", err)
+			cancel()
+		}
+
+	}
+
+	// send subscription string
+	err = c.Write(ctx, 1, []byte(cfg.WsOp.ToString()))
+
 	if err != nil {
 		log.Fatal("Error sending Op to websocket: ", err)
 	}
-	//c.WriteMessage(websocket.TextMessage, []byte(cfg.WsOp.ToString()))
+
 	doneC = make(chan struct{})
 	stopC = make(chan struct{})
 
@@ -71,6 +111,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		}()
 		for {
 			_, message, readErr := c.Read(ctx)
+			fmt.Println(string(message))
 			if readErr != nil {
 				if !silent {
 					errHandler(readErr)

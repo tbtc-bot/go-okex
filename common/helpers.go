@@ -2,7 +2,11 @@ package common
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -43,4 +47,20 @@ func Struct2JsonString(raw interface{}) (jsonString string, err error) {
 		return "", err
 	}
 	return string(data), nil
+}
+
+func Hmac256(timestamp string, method string, path string, body *bytes.Buffer, secret string) (string, error) {
+	var raw string
+	if body != nil {
+		raw = fmt.Sprintf("%s%s%s%s", timestamp, method, path, body)
+	} else {
+		raw = fmt.Sprintf("%s%s%s", timestamp, method, path)
+	}
+
+	mac := hmac.New(sha256.New, []byte(secret))
+	_, err := mac.Write([]byte(raw))
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(mac.Sum(nil)), nil
 }

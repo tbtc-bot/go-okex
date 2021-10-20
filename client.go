@@ -3,9 +3,6 @@ package okex
 import (
 	"bytes"
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -15,7 +12,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/tbtc-bot/go-okex/common"
+	. "github.com/tbtc-bot/go-okex/common"
 
 	"github.com/bitly/go-simplejson"
 )
@@ -228,7 +225,7 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 
 	fullURL := fmt.Sprintf("%s%s", c.BaseURL, r.endpoint)
 
-	timestamp := common.IsoTime()
+	timestamp := IsoTime()
 	queryString := r.query.Encode()
 	body := &bytes.Buffer{}
 	//bodyString := r.form.Encode()
@@ -258,14 +255,15 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	}
 	c.debug("path:" + path)
 	if r.secType == secTypeSigned {
-		raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, body)
-		// raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, bodyString)
-		mac := hmac.New(sha256.New, []byte(c.SecretKey))
-		_, err = mac.Write([]byte(raw))
+		sign, err := Hmac256(timestamp, r.method, path, body, c.SecretKey)
+		// raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, body)
+		// mac := hmac.New(sha256.New, []byte(c.SecretKey))
+		// _, err = mac.Write([]byte(raw))
 		if err != nil {
 			return err
 		}
-		header.Set("OK-ACCESS-SIGN", base64.StdEncoding.EncodeToString(mac.Sum(nil)))
+		//header.Set("OK-ACCESS-SIGN", base64.StdEncoding.EncodeToString(mac.Sum(nil)))
+		header.Set("OK-ACCESS-SIGN", sign)
 		v := url.Values{}
 		// v.Set(signatureKey, fmt.Sprintf("%x", (mac.Sum(nil))))
 		if queryString == "" {
@@ -322,7 +320,7 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	c.debug("response status code: %d", res.StatusCode)
 
 	if res.StatusCode >= http.StatusBadRequest {
-		apiErr := new(common.APIError)
+		apiErr := new(APIError)
 		e := json.Unmarshal(data, apiErr)
 		if e != nil {
 			c.debug("failed to unmarshal json: %s", e)
