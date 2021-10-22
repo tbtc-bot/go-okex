@@ -314,3 +314,71 @@ func wsOrdersServe(endpoint string, instType string, uly string, InstId string, 
 	}
 	return wsServe(cfg, wsHandler, errHandler)
 }
+
+// BALANCE AND POSITION WEBSOCKET (PRIVATE)
+
+type WsBalancePositionEvent struct {
+	Arg  map[string]string          `json:"arg"`
+	Data []*WsBalancePositionDetail `json:"data"`
+}
+
+type WsBalancePositionDetail struct {
+	PTime     string              `json:"pTime"`
+	EventType string              `json:"eventType"`
+	BalData   []*WsBalanceDetail  `json:"balData"`
+	PosData   []*WsPositionDetail `json:"posData"`
+}
+
+type WsBalanceDetail struct {
+	Ccy     string `json:"ccy"`
+	CashBal string `json:"CashBal"`
+	UTime   string `json:"uTime"`
+}
+
+type WsPositionDetail struct {
+	PosId    string `json:"posId"`
+	TradeId  string `json:"tradeId"`
+	InstId   string `json:"instId"`
+	InstType string `json:"instType"`
+	MgnMode  string `json:"mgnMode"`
+	PosSide  string `json:"posSide"`
+	Pos      string `json:"Pos"`
+	Ccy      string `json:"ccy"`
+	PosCcy   string `json:"posCcy"`
+	AvgPx    string `json:"avgPx"`
+	UTime    string `json:"uTime"`
+}
+
+// WsPositionBalance handle websocket PositionBalance message
+type WsBalancePositionHandler func(event *WsBalancePositionEvent)
+
+func WsBalancePositionServe(apikey string, apisecret string, passphrase string, handler WsBalancePositionHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true) // get private endpoint
+	return wsBalancePositionServe(endpoint, apikey, apisecret, passphrase, handler, errHandler)
+}
+
+// WsPositionBalance serve websocket
+func wsBalancePositionServe(endpoint string, apiKey string, secretKey string, passPhrase string, handler WsBalancePositionHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	arg := map[string]string{
+		"channel": "balance_and_position",
+	}
+
+	var args []map[string]string
+	args = append(args, arg)
+	reqData := ReqData{Op: "subscribe",
+		Args: args,
+	}
+	//fmt.Println(reqData)
+	cfg := newWsConfig(endpoint, reqData, apiKey, secretKey, passPhrase)
+	wsHandler := func(message []byte) {
+		event := new(WsBalancePositionEvent)
+		err = json.Unmarshal(message, event)
+		if err != nil {
+			errHandler(err)
+			return
+		}
+
+		handler(event)
+	}
+	return wsServe(cfg, wsHandler, errHandler)
+}
