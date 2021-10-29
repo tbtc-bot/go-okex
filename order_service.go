@@ -110,6 +110,7 @@ func (s *PlaceOrderService) Do(ctx context.Context, opts ...RequestOption) (res 
 	r.setBodyParam("posSide", s.posSide)
 	r.setBodyParam("ordType", s.ordType)
 	r.setBodyParam("sz", s.sz)
+
 	if s.ccy != nil {
 		r.setBodyParam("ccy", *s.ccy)
 	}
@@ -141,7 +142,7 @@ func (s *PlaceOrderService) Do(ctx context.Context, opts ...RequestOption) (res 
 	return res, nil
 }
 
-// Response to CreateOrderService
+// Response to PlaceOrderService
 type PlaceOrderResponse struct {
 	Code string         `json:"code"`
 	Msg  string         `json:"msg"`
@@ -425,10 +426,9 @@ func (s *AmendOrderService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 	r.setBodyParam("instId", s.instId)
 
-	// TODO
-	// if s.cxlOnFail != nil {
-	// 	r.setBodyParam("cxlOnFail", *s.cxlOnFail)
-	// }
+	if s.cxlOnFail != nil {
+		r.setBodyParam("cxlOnFail", strconv.FormatBool(*s.cxlOnFail))
+	}
 	if s.ordId != nil {
 		r.setBodyParam("ordId", *s.ordId)
 	}
@@ -471,4 +471,241 @@ type OrderDetail struct {
 	SCode   string `json:"sCode"`
 	SMsg    string `json:"sMsg"`
 	ReqId   string `json:"reqId"`
+}
+
+// PlaceOrderService places a single order
+type PlaceAlgoOrderService struct {
+	c          *Client
+	instId     string
+	tdMode     string
+	ccy        *string
+	side       string
+	posSide    *string
+	ordType    string
+	sz         string
+	reduceOnly *bool
+	tgtCcy     *string
+
+	// Stop order
+	tpTriggerPx *string
+	tpOrdPx     *string
+	slTriggerPx *string
+	slOrdPx     *string
+
+	// Trigger order
+	triggerPx *string
+	orderPx   *string
+
+	// TODO Iceberg order
+
+	// TODO TWAP order
+}
+
+// Set instrument Id
+func (s *PlaceAlgoOrderService) InstrumentId(instId string) *PlaceAlgoOrderService {
+	s.instId = instId
+	return s
+}
+
+// Set trade mode
+func (s *PlaceAlgoOrderService) TradeMode(tdMode string) *PlaceAlgoOrderService {
+	s.tdMode = tdMode
+	return s
+}
+
+// Set Currency
+func (s *PlaceAlgoOrderService) Currency(ccy string) *PlaceAlgoOrderService {
+	s.ccy = &ccy
+	return s
+}
+
+// Set side
+func (s *PlaceAlgoOrderService) Side(side string) *PlaceAlgoOrderService {
+	s.side = side
+	return s
+}
+
+// Set position side
+func (s *PlaceAlgoOrderService) PositionSide(posSide string) *PlaceAlgoOrderService {
+	s.posSide = &posSide
+	return s
+}
+
+// Set order type
+func (s *PlaceAlgoOrderService) OrderType(ordType string) *PlaceAlgoOrderService {
+	s.ordType = ordType
+	return s
+}
+
+// Set size
+func (s *PlaceAlgoOrderService) Size(sz string) *PlaceAlgoOrderService {
+	s.sz = sz
+	return s
+}
+
+// Set ReduceOnly
+func (s *PlaceAlgoOrderService) ReduceOnly(reduceOnly bool) *PlaceAlgoOrderService {
+	s.reduceOnly = &reduceOnly
+	return s
+}
+
+// Set Quantity Type
+func (s *PlaceAlgoOrderService) QuantityType(tgtCcy string) *PlaceAlgoOrderService {
+	s.tgtCcy = &tgtCcy
+	return s
+}
+
+// Set take profit trigger price
+func (s *PlaceAlgoOrderService) TakeProfitTriggerPrice(tpTriggerPx string) *PlaceAlgoOrderService {
+	s.tpTriggerPx = &tpTriggerPx
+	return s
+}
+
+// Set take profit order price
+func (s *PlaceAlgoOrderService) TakeProfitOrderPrice(tpOrdPx string) *PlaceAlgoOrderService {
+	s.tpOrdPx = &tpOrdPx
+	return s
+}
+
+// Set stop loss trigger price
+func (s *PlaceAlgoOrderService) StopLossTriggerPrice(slTriggerPx string) *PlaceAlgoOrderService {
+	s.slTriggerPx = &slTriggerPx
+	return s
+}
+
+// Set stop loss order price
+func (s *PlaceAlgoOrderService) StopLossOrderPrice(slOrdPx string) *PlaceAlgoOrderService {
+	s.slOrdPx = &slOrdPx
+	return s
+}
+
+// Set trigger price
+func (s *PlaceAlgoOrderService) TriggerPrice(triggerPx string) *PlaceAlgoOrderService {
+	s.triggerPx = &triggerPx
+	return s
+}
+
+// Set order price
+func (s *PlaceAlgoOrderService) OrderPrice(orderPx string) *PlaceAlgoOrderService {
+	s.orderPx = &orderPx
+	return s
+}
+
+// Do send request
+func (s *PlaceAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *PlaceAlgoOrderServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/algo-order",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("instId", s.instId)
+	r.setBodyParam("tdMode", s.tdMode)
+	r.setBodyParam("side", s.side)
+	r.setBodyParam("ordType", s.ordType)
+	r.setBodyParam("sz", s.sz)
+
+	if s.ccy != nil {
+		r.setBodyParam("ccy", *s.ccy)
+	}
+	if s.posSide != nil {
+		r.setBodyParam("posSide", *s.posSide)
+	}
+	if s.reduceOnly != nil {
+		r.setBodyParam("reduceOnly", strconv.FormatBool(*s.reduceOnly))
+	}
+	if s.tgtCcy != nil {
+		r.setBodyParam("tgtCcy", *s.tgtCcy)
+	}
+	if s.tpTriggerPx != nil {
+		r.setBodyParam("tpTriggerPx", *s.tpTriggerPx)
+	}
+	if s.tpOrdPx != nil {
+		r.setBodyParam("tpOrdPx", *s.tpOrdPx)
+	}
+	if s.slTriggerPx != nil {
+		r.setBodyParam("slTriggerPx", *s.slTriggerPx)
+	}
+	if s.slOrdPx != nil {
+		r.setBodyParam("slOrdPx", *s.slOrdPx)
+	}
+	if s.triggerPx != nil {
+		r.setBodyParam("triggerPx", *s.triggerPx)
+	}
+	if s.orderPx != nil {
+		r.setBodyParam("orderPx", *s.orderPx)
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(PlaceAlgoOrderServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to PlaceAlgoOrderService
+type PlaceAlgoOrderServiceResponse struct {
+	Code string             `json:"code"`
+	Msg  string             `json:"msg"`
+	Data []*AlgoOrderDetail `json:"data"`
+}
+
+// CancelAlgoOrderService cancel an algo order
+type CancelAlgoOrderService struct {
+	c      *Client
+	algoId string
+	instId string
+}
+
+// Set algo Id
+func (s *CancelAlgoOrderService) AlgoId(algoId string) *CancelAlgoOrderService {
+	s.algoId = algoId
+	return s
+}
+
+// Set instrument Id
+func (s *CancelAlgoOrderService) InstrumentId(instId string) *CancelAlgoOrderService {
+	s.instId = instId
+	return s
+}
+
+// Do send request
+func (s *CancelAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CancelAlgoOrderResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/cancel-algos",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("algoId", s.algoId)
+	r.setBodyParam("instId", s.instId)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(CancelAlgoOrderResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to CancelAlgoOrderService
+type CancelAlgoOrderResponse struct {
+	Code string             `json:"code"`
+	Msg  string             `json:"msg"`
+	Data []*AlgoOrderDetail `json:"data"`
+}
+
+type AlgoOrderDetail struct {
+	AlgoId string `json:"algoId"`
+	SCode  string `json:"sCode"`
+	SMsg   string `json:"sMsg"`
 }
