@@ -344,3 +344,8 @@ func (c *Client) NewGetPositionService() *GetPositionService {
 func (c *Client) NewCreateOrderService() *CreateOrderService {
 	return &CreateOrderService{c: c}
 }
+
+// NewCancelOrderService
+func (c *Client) NewCancelOrderService() *CancelOrderService {
+	return &CancelOrderService{c: c}
+}

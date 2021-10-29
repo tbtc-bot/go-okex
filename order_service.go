@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// START GET BALANCE CODE
+// CreateOrderService create order
 type CreateOrderService struct {
 	c          *Client
 	instId     string
@@ -97,7 +97,7 @@ func (s *CreateOrderService) QuantityType(tgtCcy string) *CreateOrderService {
 }
 
 // Do send request
-func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res *Orders, err error) {
+func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CreateOrderResponse, err error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/api/v5/trade/order",
@@ -133,7 +133,7 @@ func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 	if err != nil {
 		return nil, err
 	}
-	res = new(Orders)
+	res = new(CreateOrderResponse)
 	err = json.Unmarshal(data, res)
 	if err != nil {
 		return nil, err
@@ -141,8 +141,69 @@ func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 	return res, nil
 }
 
-// Orders structure
-type Orders struct {
+// Response to CreateOrderService
+type CreateOrderResponse struct {
+	Code string         `json:"code"`
+	Msg  string         `json:"msg"`
+	Data []*OrderDetail `json:"data"`
+}
+
+// CancelOrderService cancel an order
+type CancelOrderService struct {
+	c       *Client
+	instId  string
+	ordId   *string
+	clOrdId *string
+}
+
+// Set instrument Id
+func (s *CancelOrderService) InstrumentId(instId string) *CancelOrderService {
+	s.instId = instId
+	return s
+}
+
+// Set order Id
+func (s *CancelOrderService) OrderId(ordId string) *CancelOrderService {
+	s.ordId = &ordId
+	return s
+}
+
+// Set order Id
+func (s *CancelOrderService) ClientOrderId(clOrdId string) *CancelOrderService {
+	s.clOrdId = &clOrdId
+	return s
+}
+
+// Do send request
+func (s *CancelOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CancelOrderResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/cancel-order",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("instId", s.instId)
+	if s.ordId != nil {
+		r.setBodyParam("ordId", *s.ordId)
+	}
+	if s.clOrdId != nil {
+		r.setBodyParam("clOrdId", *s.clOrdId)
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(CancelOrderResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to CancelOrderService
+type CancelOrderResponse struct {
 	Code string         `json:"code"`
 	Msg  string         `json:"msg"`
 	Data []*OrderDetail `json:"data"`
