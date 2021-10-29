@@ -168,7 +168,7 @@ func (s *CancelOrderService) OrderId(ordId string) *CancelOrderService {
 	return s
 }
 
-// Set order Id
+// Set client order Id
 func (s *CancelOrderService) ClientOrderId(clOrdId string) *CancelOrderService {
 	s.clOrdId = &clOrdId
 	return s
@@ -183,6 +183,7 @@ func (s *CancelOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 	}
 
 	r.setBodyParam("instId", s.instId)
+
 	if s.ordId != nil {
 		r.setBodyParam("ordId", *s.ordId)
 	}
@@ -207,14 +208,6 @@ type CancelOrderResponse struct {
 	Code string         `json:"code"`
 	Msg  string         `json:"msg"`
 	Data []*OrderDetail `json:"data"`
-}
-
-type OrderDetail struct {
-	OrdId   string `json:"ordId"`
-	ClOrdId string `json:"clOrdId"`
-	Tag     string `json:"tag"`
-	SCode   string `json:"sCode"`
-	SMsg    string `json:"sMsg"`
 }
 
 // OrderListService list of all open orders
@@ -366,4 +359,116 @@ type OrderListDetail struct {
 	TpTriggerPx string `json:"tpTriggerPx"`
 	TradeId     string `json:"tradeId"`
 	UTime       string `json:"uTime"`
+}
+
+// AmendOrderService edit a pending order
+type AmendOrderService struct {
+	c         *Client
+	instId    string
+	cxlOnFail *bool
+	ordId     *string
+	clOrdId   *string
+	reqId     *string
+	newSz     *string
+	newPx     *string
+}
+
+// Set instrument id
+func (s *AmendOrderService) InstrumentId(instId string) *AmendOrderService {
+	s.instId = instId
+	return s
+}
+
+// Set cancel on fail
+func (s *AmendOrderService) CancelOnFail(cxlOnFail bool) *AmendOrderService {
+	s.cxlOnFail = &cxlOnFail
+	return s
+}
+
+// Set order Id
+func (s *AmendOrderService) OrderId(ordId string) *AmendOrderService {
+	s.ordId = &ordId
+	return s
+}
+
+// Set client order Id
+func (s *AmendOrderService) ClientOrderId(clOrdId string) *AmendOrderService {
+	s.clOrdId = &clOrdId
+	return s
+}
+
+// Set client request Id
+func (s *AmendOrderService) ClientRequestId(reqId string) *AmendOrderService {
+	s.reqId = &reqId
+	return s
+}
+
+// Set size
+func (s *AmendOrderService) Size(newSz string) *AmendOrderService {
+	s.newSz = &newSz
+	return s
+}
+
+// Set price
+func (s *AmendOrderService) Price(newPx string) *AmendOrderService {
+	s.newPx = &newPx
+	return s
+}
+
+// Do send request
+func (s *AmendOrderService) Do(ctx context.Context, opts ...RequestOption) (res *AmendOrderServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/amend-order",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("instId", s.instId)
+
+	// TODO
+	// if s.cxlOnFail != nil {
+	// 	r.setBodyParam("cxlOnFail", *s.cxlOnFail)
+	// }
+	if s.ordId != nil {
+		r.setBodyParam("ordId", *s.ordId)
+	}
+	if s.clOrdId != nil {
+		r.setBodyParam("clOrdId", *s.clOrdId)
+	}
+	if s.reqId != nil {
+		r.setBodyParam("reqId", *s.reqId)
+	}
+	if s.newSz != nil {
+		r.setBodyParam("newSz", *s.newSz)
+	}
+	if s.newPx != nil {
+		r.setBodyParam("newPx", *s.newPx)
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(AmendOrderServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to AmendOrderService
+type AmendOrderServiceResponse struct {
+	Code string         `json:"code"`
+	Msg  string         `json:"msg"`
+	Data []*OrderDetail `json:"data"`
+}
+
+type OrderDetail struct {
+	OrdId   string `json:"ordId"`
+	ClOrdId string `json:"clOrdId"`
+	Tag     string `json:"tag"`
+	SCode   string `json:"sCode"`
+	SMsg    string `json:"sMsg"`
+	ReqId   string `json:"reqId"`
 }

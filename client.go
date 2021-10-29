@@ -354,3 +354,8 @@ func (c *Client) NewCancelOrderService() *CancelOrderService {
 func (c *Client) NewOrderListService() *OrderListService {
 	return &OrderListService{c: c}
 }
+
+// NewAmendOrderService
+func (c *Client) NewAmendOrderService() *AmendOrderService {
+	return &AmendOrderService{c: c}
+}
