@@ -6,14 +6,20 @@ import (
 	"net/http"
 )
 
-// START GET BALANCE CODE
+// GetBalanceService get account balance
 type GetBalanceService struct {
 	c   *Client
 	ccy *string
 }
 
+// Set currency ccy
+func (s *GetBalanceService) Currencies(ccy string) *GetBalanceService {
+	s.ccy = &ccy
+	return s
+}
+
 // Do send request
-func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res *Balances, err error) {
+func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res *GetBalanceServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/api/v5/account/balance",
@@ -29,7 +35,7 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 	if err != nil {
 		return nil, err
 	}
-	res = new(Balances)
+	res = new(GetBalanceServiceResponse)
 	err = json.Unmarshal(data, res)
 	if err != nil {
 		return nil, err
@@ -37,10 +43,11 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 	return res, nil
 }
 
-// Set currency ccy
-func (s *GetBalanceService) Currencies(ccy string) *GetBalanceService {
-	s.ccy = &ccy
-	return s
+// Balance define user balance of your account
+type GetBalanceServiceResponse struct {
+	Code string     `json:"code"`
+	Data []*Balance `json:"data"`
+	Msg  string     `json:"msg"`
 }
 
 // Balance define account info
@@ -82,25 +89,34 @@ type Balance struct {
 	UTime       string           `json:"uTime"`
 }
 
-// Balance define user balance of your account
-type Balances struct {
-	Code string     `json:"code"`
-	Data []*Balance `json:"data"`
-	Msg  string     `json:"msg"`
-}
-
-// START GET POSITION CODE
-
-// GetBalanceService
-type GetPositionService struct {
+// GetPositionsService
+type GetPositionsService struct {
 	c        *Client
 	instType *string
 	instId   *string
 	posId    *string
 }
 
+// Set Instrument Type
+func (s *GetPositionsService) InstrumentType(instType string) *GetPositionsService {
+	s.instType = &instType
+	return s
+}
+
+// Set Instrument Id
+func (s *GetPositionsService) InstrumentId(instId string) *GetPositionsService {
+	s.instId = &instId
+	return s
+}
+
+// Set Position Id
+func (s *GetPositionsService) PositionId(posId string) *GetPositionsService {
+	s.posId = &posId
+	return s
+}
+
 // Do send request
-func (s *GetPositionService) Do(ctx context.Context, opts ...RequestOption) (res *Positions, err error) {
+func (s *GetPositionsService) Do(ctx context.Context, opts ...RequestOption) (res *GetPositionsServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/api/v5/account/positions",
@@ -121,7 +137,7 @@ func (s *GetPositionService) Do(ctx context.Context, opts ...RequestOption) (res
 	if err != nil {
 		return nil, err
 	}
-	res = new(Positions)
+	res = new(GetPositionsServiceResponse)
 	err = json.Unmarshal(data, res)
 	if err != nil {
 		return nil, err
@@ -129,22 +145,11 @@ func (s *GetPositionService) Do(ctx context.Context, opts ...RequestOption) (res
 	return res, nil
 }
 
-// Set Instrument Type
-func (s *GetPositionService) InstrumentType(instType string) *GetPositionService {
-	s.instType = &instType
-	return s
-}
-
-// Set Instrument Id
-func (s *GetPositionService) InstrumentId(instId string) *GetPositionService {
-	s.instId = &instId
-	return s
-}
-
-// Set Position Id
-func (s *GetPositionService) PositionId(posId string) *GetPositionService {
-	s.posId = &posId
-	return s
+// GetPositionsServiceResponse struct as https://www.okex.com/docs-v5/en/#rest-api-account-get-positions
+type GetPositionsServiceResponse struct {
+	Code string            `json:"code"`
+	Data []*PositionDetail `json:"data"`
+	Msg  string            `json:"msg"`
 }
 
 // Position detail inside the positions
@@ -171,6 +176,7 @@ type PositionDetail struct {
 	MgnMode     string `json:"mgnMode"`
 	MgnRatio    string `json:"mgnRatio"`
 	Mmr         string `json:"mmr"`
+	NotionalCcy string `json:"notionalCcy"`
 	NotionalUsd string `json:"notionalUsd"`
 	OptVal      string `json:"optVal"`
 	PTime       string `json:"pTime"`
@@ -187,11 +193,90 @@ type PositionDetail struct {
 	VegaPA      string `json:"vegaPA"`
 }
 
-// Positions struct as https://www.okex.com/docs-v5/en/#rest-api-account-get-positions
-type Positions struct {
-	Code string            `json:"code"`
-	Data []*PositionDetail `json:"data"`
-	Msg  string            `json:"msg"`
+// GetAccountAndPositionRiskService
+type GetAccountAndPositionRiskService struct {
+	c        *Client
+	instType *string
+}
+
+// Do send request
+func (s *GetAccountAndPositionRiskService) Do(ctx context.Context, opts ...RequestOption) (res *GetAccountAndPositionRiskServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/api/v5/account/account-position-risk",
+		secType:  secTypeSigned,
+	}
+
+	if s.instType != nil {
+		r.setParam("instType", *s.instType)
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(GetAccountAndPositionRiskServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to GetAccountAndPositionRiskService
+type GetAccountAndPositionRiskServiceResponse struct {
+	Code string                    `json:"code"`
+	Data []*AccountAndPositionRisk `json:"data"`
+	Msg  string                    `json:"msg"`
+}
+
+type AccountAndPositionRisk struct {
+	Ts      string           `json:"ts"`
+	AdjEq   string           `json:"adjEq"`
+	BalData []BalanceDetail  `json:"balData"`
+	PosData []PositionDetail `json:"posData"`
+}
+
+// GetAccountConfigurationService
+type GetAccountConfigurationService struct {
+	c *Client
+}
+
+// Do send request
+func (s *GetAccountConfigurationService) Do(ctx context.Context, opts ...RequestOption) (res *GetAccountConfigurationServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/api/v5/account/config",
+		secType:  secTypeSigned,
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(GetAccountConfigurationServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to GetAccountConfigurationService
+type GetAccountConfigurationServiceResponse struct {
+	Code string                  `json:"code"`
+	Data []*AccountConfiguration `json:"data"`
+	Msg  string                  `json:"msg"`
+}
+
+type AccountConfiguration struct {
+	Uid        string `json:"udi"`
+	AcctLv     string `json:"acctLc"`
+	PosMode    string `json:"posMode"`
+	AutoLoan   bool   `json:"autoLoan"`
+	GreeksType string `json:"greeksType"`
+	Level      string `json:"level"`
+	LevelTmp   string `json:"levelTmp"`
 }
 
 // // GetAccountSnapshotService all account orders; active, canceled, or filled

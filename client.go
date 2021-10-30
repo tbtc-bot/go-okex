@@ -335,9 +335,19 @@ func (c *Client) NewGetBalanceService() *GetBalanceService {
 	return &GetBalanceService{c: c}
 }
 
-// NewGetPositionService
-func (c *Client) NewGetPositionService() *GetPositionService {
-	return &GetPositionService{c: c}
+// NewGetPositionsService
+func (c *Client) NewGetPositionsService() *GetPositionsService {
+	return &GetPositionsService{c: c}
+}
+
+// NewGetAccountAndPositionRiskService
+func (c *Client) NewGetAccountAndPositionRiskService() *GetAccountAndPositionRiskService {
+	return &GetAccountAndPositionRiskService{c: c}
+}
+
+// GetAccountConfigurationService
+func (c *Client) NewGetAccountConfigurationService() *GetAccountConfigurationService {
+	return &GetAccountConfigurationService{c: c}
 }
 
 // NewPlaceOrderService

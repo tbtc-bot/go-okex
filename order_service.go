@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// PlaceOrderService places a single order
+// PlaceOrderService place a single order
 type PlaceOrderService struct {
 	c          *Client
 	instId     string
