@@ -176,7 +176,7 @@ type PositionDetail struct {
 	MgnMode     string `json:"mgnMode"`
 	MgnRatio    string `json:"mgnRatio"`
 	Mmr         string `json:"mmr"`
-	NotionalCcy string `json:"notionalCcy"`
+	NotionalCcy string `json:"notionalCcy"` // this is for AccountAndPositionRisk
 	NotionalUsd string `json:"notionalUsd"`
 	OptVal      string `json:"optVal"`
 	PTime       string `json:"pTime"`

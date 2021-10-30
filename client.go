@@ -379,3 +379,18 @@ func (c *Client) NewPlaceAlgoOrderService() *PlaceAlgoOrderService {
 func (c *Client) NewCancelAlgoOrderService() *CancelAlgoOrderService {
 	return &CancelAlgoOrderService{c: c}
 }
+
+// NewGetTickersService
+func (c *Client) NewGetTickersService() *GetTickersService {
+	return &GetTickersService{c: c}
+}
+
+// NewGetTickerService
+func (c *Client) NewGetTickerService() *GetTickerService {
+	return &GetTickerService{c: c}
+}
+
+// NewGetInstrumentsService
+func (c *Client) NewGetInstrumentsService() *GetInstrumentsService {
+	return &GetInstrumentsService{c: c}
+}
