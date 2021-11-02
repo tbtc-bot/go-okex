@@ -341,12 +341,62 @@ func (c *Client) NewGetBalanceService() *GetBalanceService {
 	return &GetBalanceService{c: c}
 }
 
-// NewGetPositionService
-func (c *Client) NewGetPositionService() *GetPositionService {
-	return &GetPositionService{c: c}
+// NewGetPositionsService
+func (c *Client) NewGetPositionsService() *GetPositionsService {
+	return &GetPositionsService{c: c}
 }
 
-// NewCreateOrderService
-func (c *Client) NewCreateOrderService() *CreateOrderService {
-	return &CreateOrderService{c: c}
+// NewGetAccountAndPositionRiskService
+func (c *Client) NewGetAccountAndPositionRiskService() *GetAccountAndPositionRiskService {
+	return &GetAccountAndPositionRiskService{c: c}
+}
+
+// GetAccountConfigurationService
+func (c *Client) NewGetAccountConfigurationService() *GetAccountConfigurationService {
+	return &GetAccountConfigurationService{c: c}
+}
+
+// NewPlaceOrderService
+func (c *Client) NewPlaceOrderService() *PlaceOrderService {
+	return &PlaceOrderService{c: c}
+}
+
+// NewCancelOrderService
+func (c *Client) NewCancelOrderService() *CancelOrderService {
+	return &CancelOrderService{c: c}
+}
+
+// NewOrderListService
+func (c *Client) NewOrderListService() *OrderListService {
+	return &OrderListService{c: c}
+}
+
+// NewAmendOrderService
+func (c *Client) NewAmendOrderService() *AmendOrderService {
+	return &AmendOrderService{c: c}
+}
+
+// NewPlaceAlgoOrderService
+func (c *Client) NewPlaceAlgoOrderService() *PlaceAlgoOrderService {
+	return &PlaceAlgoOrderService{c: c}
+}
+
+// NewCancelAlgoOrderService
+func (c *Client) NewCancelAlgoOrderService() *CancelAlgoOrderService {
+	return &CancelAlgoOrderService{c: c}
+}
+
+// NewGetTickersService
+func (c *Client) NewGetTickersService() *GetTickersService {
+	return &GetTickersService{c: c}
+}
+
+// NewGetTickerService
+func (c *Client) NewGetTickerService() *GetTickerService {
+	return &GetTickerService{c: c}
+}
+
+// NewGetInstrumentsService
+func (c *Client) NewGetInstrumentsService() *GetInstrumentsService {
+	return &GetInstrumentsService{c: c}
 }
