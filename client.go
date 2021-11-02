@@ -188,6 +188,7 @@ func NewClient(apiKey, secretKey, passPhrase string) *Client {
 		HTTPClient: http.DefaultClient,
 		Logger:     log.New(os.Stderr, "Huobi-golang ", log.LstdFlags),
 		Debug:      false,
+		Simulated:  false, // True to enable simulated mode
 	}
 }
 
@@ -202,6 +203,7 @@ type Client struct {
 	UserAgent  string
 	HTTPClient *http.Client
 	Debug      bool
+	Simulated  bool
 	Logger     *log.Logger
 	TimeOffset int64
 	do         doFunc
@@ -247,6 +249,10 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 		header.Set("OK-ACCESS-KEY", c.APIKey)
 		header.Set("OK-ACCESS-PASSPHRASE", c.PassPhrase)
 		header.Set("OK-ACCESS-TIMESTAMP", timestamp)
+	}
+
+	if c.Simulated {
+		header.Set("x-simulated-trading", "1")
 	}
 
 	path := r.endpoint

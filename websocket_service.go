@@ -21,11 +21,19 @@ var (
 )
 
 // getWsEndpoint return the base endpoint of the WS according the UseTestnet flag
-func getWsEndpoint(private bool) string {
+func getWsEndpoint(private bool, simulated bool) string {
 	if private {
-		return baseWsPrivateURL
+		if simulated {
+			return baseWsPrivateURL + "?brokerId=9999"
+		} else {
+			return baseWsPrivateURL
+		}
 	}
-	return baseWsPublicURL
+	if simulated {
+		return baseWsPublicURL + "?brokerId=9999"
+	} else {
+		return baseWsPublicURL
+	}
 }
 
 // ACCCOUNT WEBSOCKET (PUBLIC)
@@ -63,8 +71,8 @@ type WsInstrument struct {
 type WsInstrumentsHandler func(event *WsInstrumentsEvent)
 
 // WsInstruments as per https://www.okex.com/docs-v5/en/#websocket-api-public-channels-instruments-channel
-func WsInstrumentsServe(instType string, handler WsInstrumentsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := getWsEndpoint(false)
+func WsInstrumentsServe(instType string, handler WsInstrumentsHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(false, simulated)
 	return wsInstrumentsServe(endpoint, instType, handler, errHandler)
 }
 
@@ -143,8 +151,8 @@ type WsAccountDetail struct {
 // WsAccounts handle websocket instrument message
 type WsAccountsHandler func(event *WsAccountsEvent)
 
-func WsAccountsServe(ccy string, apikey string, apisecret string, passphrase string, handler WsAccountsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := getWsEndpoint(true) // get private endpoint
+func WsAccountsServe(ccy string, apikey string, apisecret string, passphrase string, handler WsAccountsHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true, simulated) // get private endpoint
 	return wsAccountsServe(endpoint, ccy, apikey, apisecret, passphrase, ccy, handler, errHandler)
 }
 
@@ -186,8 +194,8 @@ type WsPositionsEvent struct {
 // WsPositions handle websocket instrument message
 type WsPositionsHandler func(event *WsPositionsEvent)
 
-func WsPositionsServe(instType string, uly string, instId string, apikey string, apisecret string, passphrase string, handler WsPositionsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := getWsEndpoint(true) // get private endpoint
+func WsPositionsServe(instType string, uly string, instId string, apikey string, apisecret string, passphrase string, handler WsPositionsHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true, simulated) // get private endpoint
 	return wsPositionsServe(endpoint, instType, uly, instId, apikey, apisecret, passphrase, handler, errHandler)
 }
 
@@ -278,8 +286,8 @@ type WsOrderDetail struct {
 // WsOrders handle websocket instrument message
 type WsOrdersHandler func(event *WsOrdersEvent)
 
-func WsOrdersServe(instType string, uly string, instId string, apikey string, apisecret string, passphrase string, handler WsOrdersHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := getWsEndpoint(true) // get private endpoint
+func WsOrdersServe(instType string, uly string, instId string, apikey string, apisecret string, passphrase string, handler WsOrdersHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true, simulated) // get private endpoint
 	return wsOrdersServe(endpoint, instType, uly, instId, apikey, apisecret, passphrase, handler, errHandler)
 }
 
@@ -352,8 +360,8 @@ type WsPositionDetail struct {
 // WsPositionBalance handle websocket PositionBalance message
 type WsBalancePositionHandler func(event *WsBalancePositionEvent)
 
-func WsBalancePositionServe(apikey string, apisecret string, passphrase string, handler WsBalancePositionHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := getWsEndpoint(true) // get private endpoint
+func WsBalancePositionServe(apikey string, apisecret string, passphrase string, handler WsBalancePositionHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(true, simulated) // get private endpoint
 	return wsBalancePositionServe(endpoint, apikey, apisecret, passphrase, handler, errHandler)
 }
 
