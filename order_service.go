@@ -595,7 +595,7 @@ func (s *PlaceAlgoOrderService) OrderPrice(orderPx string) *PlaceAlgoOrderServic
 func (s *PlaceAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *PlaceAlgoOrderServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodPost,
-		endpoint: "/api/v5/trade/algo-order",
+		endpoint: "/api/v5/trade/order-algo",
 		secType:  secTypeSigned,
 	}
 
@@ -676,6 +676,8 @@ func (s *CancelAlgoOrderService) InstrumentId(instId string) *CancelAlgoOrderSer
 
 // Do send request
 func (s *CancelAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CancelAlgoOrderResponse, err error) {
+	// TODO cancel multiple orders
+
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/api/v5/trade/cancel-algos",

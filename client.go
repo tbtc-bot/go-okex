@@ -86,9 +86,11 @@ const (
 	SideTypeBuy  SideType = "buy"
 	SideTypeSell SideType = "sell"
 
+	PositionSideTypeNet   PositionSideType = "net"
 	PositionSideTypeLong  PositionSideType = "long"
 	PositionSideTypeShort PositionSideType = "short"
 
+	// Order type
 	OrderTypeLimit           OrderType = "limit"
 	OrderTypeMarket          OrderType = "market"
 	OrderTypePostOnly        OrderType = "post_only"
@@ -96,66 +98,73 @@ const (
 	OrderTypeIOC             OrderType = "ioc"
 	OrderTypeOptimalLimitIOC OrderType = "optimal_limit_ioc"
 
-	TimeInForceTypeGTC TimeInForceType = "GTC"
-	TimeInForceTypeIOC TimeInForceType = "IOC"
-	TimeInForceTypeFOK TimeInForceType = "FOK"
+	// Algo order type
+	OrderTypeConditional OrderType = "conditional"
+	OrderTypeOCO         OrderType = "oco"
+	OrderTypeTrigger     OrderType = "trigger"
+	OrderTypeIceberg     OrderType = "iceberg"
+	OrderTypeTwap        OrderType = "twap"
 
-	NewOrderRespTypeACK    NewOrderRespType = "ACK"
-	NewOrderRespTypeRESULT NewOrderRespType = "RESULT"
-	NewOrderRespTypeFULL   NewOrderRespType = "FULL"
+	// TimeInForceTypeGTC TimeInForceType = "GTC"
+	// TimeInForceTypeIOC TimeInForceType = "IOC"
+	// TimeInForceTypeFOK TimeInForceType = "FOK"
 
-	OrderStatusTypeNew             OrderStatusType = "NEW"
-	OrderStatusTypePartiallyFilled OrderStatusType = "PARTIALLY_FILLED"
-	OrderStatusTypeFilled          OrderStatusType = "FILLED"
-	OrderStatusTypeCanceled        OrderStatusType = "CANCELED"
-	OrderStatusTypePendingCancel   OrderStatusType = "PENDING_CANCEL"
-	OrderStatusTypeRejected        OrderStatusType = "REJECTED"
-	OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
+	// NewOrderRespTypeACK    NewOrderRespType = "ACK"
+	// NewOrderRespTypeRESULT NewOrderRespType = "RESULT"
+	// NewOrderRespTypeFULL   NewOrderRespType = "FULL"
 
-	SymbolTypeSpot SymbolType = "SPOT"
+	// OrderStatusTypeNew             OrderStatusType = "NEW"
+	// OrderStatusTypePartiallyFilled OrderStatusType = "PARTIALLY_FILLED"
+	// OrderStatusTypeFilled          OrderStatusType = "FILLED"
+	// OrderStatusTypeCanceled        OrderStatusType = "CANCELED"
+	// OrderStatusTypePendingCancel   OrderStatusType = "PENDING_CANCEL"
+	// OrderStatusTypeRejected        OrderStatusType = "REJECTED"
+	// OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
 
-	SymbolStatusTypePreTrading   SymbolStatusType = "PRE_TRADING"
-	SymbolStatusTypeTrading      SymbolStatusType = "TRADING"
-	SymbolStatusTypePostTrading  SymbolStatusType = "POST_TRADING"
-	SymbolStatusTypeEndOfDay     SymbolStatusType = "END_OF_DAY"
-	SymbolStatusTypeHalt         SymbolStatusType = "HALT"
-	SymbolStatusTypeAuctionMatch SymbolStatusType = "AUCTION_MATCH"
-	SymbolStatusTypeBreak        SymbolStatusType = "BREAK"
+	// SymbolTypeSpot SymbolType = "SPOT"
 
-	SymbolFilterTypeLotSize          SymbolFilterType = "LOT_SIZE"
-	SymbolFilterTypePriceFilter      SymbolFilterType = "PRICE_FILTER"
-	SymbolFilterTypePercentPrice     SymbolFilterType = "PERCENT_PRICE"
-	SymbolFilterTypeMinNotional      SymbolFilterType = "MIN_NOTIONAL"
-	SymbolFilterTypeIcebergParts     SymbolFilterType = "ICEBERG_PARTS"
-	SymbolFilterTypeMarketLotSize    SymbolFilterType = "MARKET_LOT_SIZE"
-	SymbolFilterTypeMaxNumAlgoOrders SymbolFilterType = "MAX_NUM_ALGO_ORDERS"
+	// SymbolStatusTypePreTrading   SymbolStatusType = "PRE_TRADING"
+	// SymbolStatusTypeTrading      SymbolStatusType = "TRADING"
+	// SymbolStatusTypePostTrading  SymbolStatusType = "POST_TRADING"
+	// SymbolStatusTypeEndOfDay     SymbolStatusType = "END_OF_DAY"
+	// SymbolStatusTypeHalt         SymbolStatusType = "HALT"
+	// SymbolStatusTypeAuctionMatch SymbolStatusType = "AUCTION_MATCH"
+	// SymbolStatusTypeBreak        SymbolStatusType = "BREAK"
 
-	UserDataEventTypeOutboundAccountPosition UserDataEventType = "outboundAccountPosition"
-	UserDataEventTypeBalanceUpdate           UserDataEventType = "balanceUpdate"
-	UserDataEventTypeExecutionReport         UserDataEventType = "executionReport"
-	UserDataEventTypeListStatus              UserDataEventType = "ListStatus"
+	// SymbolFilterTypeLotSize          SymbolFilterType = "LOT_SIZE"
+	// SymbolFilterTypePriceFilter      SymbolFilterType = "PRICE_FILTER"
+	// SymbolFilterTypePercentPrice     SymbolFilterType = "PERCENT_PRICE"
+	// SymbolFilterTypeMinNotional      SymbolFilterType = "MIN_NOTIONAL"
+	// SymbolFilterTypeIcebergParts     SymbolFilterType = "ICEBERG_PARTS"
+	// SymbolFilterTypeMarketLotSize    SymbolFilterType = "MARKET_LOT_SIZE"
+	// SymbolFilterTypeMaxNumAlgoOrders SymbolFilterType = "MAX_NUM_ALGO_ORDERS"
 
-	MarginTransferTypeToMargin MarginTransferType = 1
-	MarginTransferTypeToMain   MarginTransferType = 2
+	// UserDataEventTypeOutboundAccountPosition UserDataEventType = "outboundAccountPosition"
+	// UserDataEventTypeBalanceUpdate           UserDataEventType = "balanceUpdate"
+	// UserDataEventTypeExecutionReport         UserDataEventType = "executionReport"
+	// UserDataEventTypeListStatus              UserDataEventType = "ListStatus"
 
-	FuturesTransferTypeToFutures FuturesTransferType = 1
-	FuturesTransferTypeToMain    FuturesTransferType = 2
+	// MarginTransferTypeToMargin MarginTransferType = 1
+	// MarginTransferTypeToMain   MarginTransferType = 2
 
-	MarginLoanStatusTypePending   MarginLoanStatusType = "PENDING"
-	MarginLoanStatusTypeConfirmed MarginLoanStatusType = "CONFIRMED"
-	MarginLoanStatusTypeFailed    MarginLoanStatusType = "FAILED"
+	// FuturesTransferTypeToFutures FuturesTransferType = 1
+	// FuturesTransferTypeToMain    FuturesTransferType = 2
 
-	MarginRepayStatusTypePending   MarginRepayStatusType = "PENDING"
-	MarginRepayStatusTypeConfirmed MarginRepayStatusType = "CONFIRMED"
-	MarginRepayStatusTypeFailed    MarginRepayStatusType = "FAILED"
+	// MarginLoanStatusTypePending   MarginLoanStatusType = "PENDING"
+	// MarginLoanStatusTypeConfirmed MarginLoanStatusType = "CONFIRMED"
+	// MarginLoanStatusTypeFailed    MarginLoanStatusType = "FAILED"
 
-	FuturesTransferStatusTypePending   FuturesTransferStatusType = "PENDING"
-	FuturesTransferStatusTypeConfirmed FuturesTransferStatusType = "CONFIRMED"
-	FuturesTransferStatusTypeFailed    FuturesTransferStatusType = "FAILED"
+	// MarginRepayStatusTypePending   MarginRepayStatusType = "PENDING"
+	// MarginRepayStatusTypeConfirmed MarginRepayStatusType = "CONFIRMED"
+	// MarginRepayStatusTypeFailed    MarginRepayStatusType = "FAILED"
 
-	SideEffectTypeNoSideEffect SideEffectType = "NO_SIDE_EFFECT"
-	SideEffectTypeMarginBuy    SideEffectType = "MARGIN_BUY"
-	SideEffectTypeAutoRepay    SideEffectType = "AUTO_REPAY"
+	// FuturesTransferStatusTypePending   FuturesTransferStatusType = "PENDING"
+	// FuturesTransferStatusTypeConfirmed FuturesTransferStatusType = "CONFIRMED"
+	// FuturesTransferStatusTypeFailed    FuturesTransferStatusType = "FAILED"
+
+	// SideEffectTypeNoSideEffect SideEffectType = "NO_SIDE_EFFECT"
+	// SideEffectTypeMarginBuy    SideEffectType = "MARGIN_BUY"
+	// SideEffectTypeAutoRepay    SideEffectType = "AUTO_REPAY"
 
 	//timestampKey  = "timestamp"
 	signatureKey  = "signature"
