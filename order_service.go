@@ -11,13 +11,13 @@ import (
 type PlaceOrderService struct {
 	c          *Client
 	instId     string
-	tdMode     string
+	tdMode     TradeMode
 	ccy        *string
 	clOrdId    *string
 	tag        *string
-	side       string
-	posSide    string
-	ordType    string
+	side       SideType
+	posSide    PositionSideType
+	ordType    OrderType
 	sz         string
 	px         *string
 	reduceOnly *bool
@@ -31,7 +31,7 @@ func (s *PlaceOrderService) InstrumentId(instId string) *PlaceOrderService {
 }
 
 // Set trade mode
-func (s *PlaceOrderService) TradeMode(tdMode string) *PlaceOrderService {
+func (s *PlaceOrderService) TradeMode(tdMode TradeMode) *PlaceOrderService {
 	s.tdMode = tdMode
 	return s
 }
@@ -55,19 +55,19 @@ func (s *PlaceOrderService) Tag(tag string) *PlaceOrderService {
 }
 
 // Set side
-func (s *PlaceOrderService) Side(side string) *PlaceOrderService {
+func (s *PlaceOrderService) Side(side SideType) *PlaceOrderService {
 	s.side = side
 	return s
 }
 
 // Set position side
-func (s *PlaceOrderService) PositionSide(posSide string) *PlaceOrderService {
+func (s *PlaceOrderService) PositionSide(posSide PositionSideType) *PlaceOrderService {
 	s.posSide = posSide
 	return s
 }
 
 // Set order type
-func (s *PlaceOrderService) OrderType(ordType string) *PlaceOrderService {
+func (s *PlaceOrderService) OrderType(ordType OrderType) *PlaceOrderService {
 	s.ordType = ordType
 	return s
 }
@@ -105,10 +105,10 @@ func (s *PlaceOrderService) Do(ctx context.Context, opts ...RequestOption) (res 
 	}
 
 	r.setBodyParam("instId", s.instId)
-	r.setBodyParam("tdMode", s.tdMode)
-	r.setBodyParam("side", s.side)
-	r.setBodyParam("posSide", s.posSide)
-	r.setBodyParam("ordType", s.ordType)
+	r.setBodyParam("tdMode", string(s.tdMode))
+	r.setBodyParam("side", string(s.side))
+	r.setBodyParam("posSide", string(s.posSide))
+	r.setBodyParam("ordType", string(s.ordType))
 	r.setBodyParam("sz", s.sz)
 
 	if s.ccy != nil {
@@ -217,7 +217,7 @@ type OrderListService struct {
 	instType *string
 	uly      *string
 	instId   *string
-	ordType  *string
+	ordType  *OrderType
 	state    *string
 	after    *string
 	before   *string
@@ -243,7 +243,7 @@ func (s *OrderListService) InstrumentId(instId string) *OrderListService {
 }
 
 // Set order type
-func (s *OrderListService) OrderType(ordType string) *OrderListService {
+func (s *OrderListService) OrderType(ordType OrderType) *OrderListService {
 	s.ordType = &ordType
 	return s
 }
@@ -292,7 +292,7 @@ func (s *OrderListService) Do(ctx context.Context, opts ...RequestOption) (res *
 		r.setBodyParam("instId", *s.instId)
 	}
 	if s.ordType != nil {
-		r.setBodyParam("ordType", *s.ordType)
+		r.setBodyParam("ordType", string(*s.ordType))
 	}
 	if s.state != nil {
 		r.setBodyParam("state", *s.state)
@@ -477,11 +477,11 @@ type OrderDetail struct {
 type PlaceAlgoOrderService struct {
 	c          *Client
 	instId     string
-	tdMode     string
+	tdMode     TradeMode
 	ccy        *string
-	side       string
-	posSide    *string
-	ordType    string
+	side       SideType
+	posSide    *PositionSideType
+	ordType    OrderType
 	sz         string
 	reduceOnly *bool
 	tgtCcy     *string
@@ -508,7 +508,7 @@ func (s *PlaceAlgoOrderService) InstrumentId(instId string) *PlaceAlgoOrderServi
 }
 
 // Set trade mode
-func (s *PlaceAlgoOrderService) TradeMode(tdMode string) *PlaceAlgoOrderService {
+func (s *PlaceAlgoOrderService) TradeMode(tdMode TradeMode) *PlaceAlgoOrderService {
 	s.tdMode = tdMode
 	return s
 }
@@ -520,19 +520,19 @@ func (s *PlaceAlgoOrderService) Currency(ccy string) *PlaceAlgoOrderService {
 }
 
 // Set side
-func (s *PlaceAlgoOrderService) Side(side string) *PlaceAlgoOrderService {
+func (s *PlaceAlgoOrderService) Side(side SideType) *PlaceAlgoOrderService {
 	s.side = side
 	return s
 }
 
 // Set position side
-func (s *PlaceAlgoOrderService) PositionSide(posSide string) *PlaceAlgoOrderService {
+func (s *PlaceAlgoOrderService) PositionSide(posSide PositionSideType) *PlaceAlgoOrderService {
 	s.posSide = &posSide
 	return s
 }
 
 // Set order type
-func (s *PlaceAlgoOrderService) OrderType(ordType string) *PlaceAlgoOrderService {
+func (s *PlaceAlgoOrderService) OrderType(ordType OrderType) *PlaceAlgoOrderService {
 	s.ordType = ordType
 	return s
 }
@@ -600,16 +600,16 @@ func (s *PlaceAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (
 	}
 
 	r.setBodyParam("instId", s.instId)
-	r.setBodyParam("tdMode", s.tdMode)
-	r.setBodyParam("side", s.side)
-	r.setBodyParam("ordType", s.ordType)
+	r.setBodyParam("tdMode", string(s.tdMode))
+	r.setBodyParam("side", string(s.side))
+	r.setBodyParam("ordType", string(s.ordType))
 	r.setBodyParam("sz", s.sz)
 
 	if s.ccy != nil {
 		r.setBodyParam("ccy", *s.ccy)
 	}
 	if s.posSide != nil {
-		r.setBodyParam("posSide", *s.posSide)
+		r.setBodyParam("posSide", string(*s.posSide))
 	}
 	if s.reduceOnly != nil {
 		r.setBodyParam("reduceOnly", strconv.FormatBool(*s.reduceOnly))

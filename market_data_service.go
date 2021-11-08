@@ -29,13 +29,13 @@ func (s *GetTickersService) Underlying(uly string) *GetTickersService {
 func (s *GetTickersService) Do(ctx context.Context, opts ...RequestOption) (res *GetTickerServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v5/trade/tickers",
+		endpoint: "/api/v5/market/tickers",
 	}
 
-	r.setBodyParam("instId", s.instType)
+	r.setParam("instId", s.instType)
 
 	if s.uly != nil {
-		r.setBodyParam("ccy", *s.uly)
+		r.setParam("uly", *s.uly)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)
@@ -66,10 +66,10 @@ func (s *GetTickerService) InstrumentId(instId string) *GetTickerService {
 func (s *GetTickerService) Do(ctx context.Context, opts ...RequestOption) (res *GetTickerServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v5/trade/ticker",
+		endpoint: "/api/v5/market/ticker",
 	}
 
-	r.setBodyParam("instId", s.instId)
+	r.setParam("instId", s.instId)
 
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {

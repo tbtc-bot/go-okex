@@ -39,13 +39,13 @@ func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (
 		endpoint: "/api/v5/trade/ticker",
 	}
 
-	r.setBodyParam("instId", s.instType)
+	r.setParam("instId", s.instType)
 
 	if s.uly != nil {
-		r.setBodyParam("uly", *s.uly)
+		r.setParam("uly", *s.uly)
 	}
 	if s.instId != nil {
-		r.setBodyParam("instId", *s.instId)
+		r.setParam("instId", *s.instId)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)

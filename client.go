@@ -17,8 +17,14 @@ import (
 	"github.com/bitly/go-simplejson"
 )
 
+// TradeMode define trade mode
+type TradeMode string
+
 // SideType define side type of orders
 type SideType string
+
+// PositionSideType define position side type of order
+type PositionSideType string
 
 // OrderType define order type
 type OrderType string
@@ -73,16 +79,22 @@ var UseTestnet = false
 
 // Global enums
 const (
-	SideTypeBuy  SideType = "BUY"
-	SideTypeSell SideType = "SELL"
+	TradeModeIsolated TradeMode = "isolated"
+	TradeModeCross    TradeMode = "cross"
+	TradeModeCash     TradeMode = "cash"
 
-	OrderTypeLimit           OrderType = "LIMIT"
-	OrderTypeMarket          OrderType = "MARKET"
-	OrderTypeLimitMaker      OrderType = "LIMIT_MAKER"
-	OrderTypeStopLoss        OrderType = "STOP_LOSS"
-	OrderTypeStopLossLimit   OrderType = "STOP_LOSS_LIMIT"
-	OrderTypeTakeProfit      OrderType = "TAKE_PROFIT"
-	OrderTypeTakeProfitLimit OrderType = "TAKE_PROFIT_LIMIT"
+	SideTypeBuy  SideType = "buy"
+	SideTypeSell SideType = "sell"
+
+	PositionSideTypeLong  PositionSideType = "long"
+	PositionSideTypeShort PositionSideType = "short"
+
+	OrderTypeLimit           OrderType = "limit"
+	OrderTypeMarket          OrderType = "market"
+	OrderTypePostOnly        OrderType = "post_only"
+	OrderTypeFOK             OrderType = "fok"
+	OrderTypeIOC             OrderType = "ioc"
+	OrderTypeOptimalLimitIOC OrderType = "optimal_limit_ioc"
 
 	TimeInForceTypeGTC TimeInForceType = "GTC"
 	TimeInForceTypeIOC TimeInForceType = "IOC"
@@ -367,7 +379,7 @@ func (c *Client) NewCancelOrderService() *CancelOrderService {
 }
 
 // NewOrderListService
-func (c *Client) NewOrderListService() *OrderListService {
+func (c *Client) NewGetOrderListService() *OrderListService {
 	return &OrderListService{c: c}
 }
 
