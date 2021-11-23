@@ -279,6 +279,47 @@ type AccountConfiguration struct {
 	LevelTmp   string `json:"levelTmp"`
 }
 
+// SetAccountPositionModeService
+type SetAccountPositionModeService struct {
+	c       *Client
+	posMode string
+}
+
+// Set pos Mode 'long_short_mode' or 'net_mode'
+func (s *SetAccountPositionModeService) PosMode(posMode string) *SetAccountPositionModeService {
+	s.posMode = posMode
+	return s
+}
+
+// Do send request
+func (s *SetAccountPositionModeService) Do(ctx context.Context, opts ...RequestOption) (res *SetAccountPositionModeServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/account/set-position-mode",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("posMode", s.posMode)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(SetAccountPositionModeServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to SetAccountPositionModeServiceService
+type SetAccountPositionModeServiceResponse struct {
+	Code string         `json:"code"`
+	Data []*interface{} `json:"data"`
+	Msg  string         `json:"msg"`
+}
+
 // // GetAccountSnapshotService all account orders; active, canceled, or filled
 // type GetAccountSnapshotService struct {
 // 	c           *Client
