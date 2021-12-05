@@ -118,16 +118,16 @@ type WsInstrumentPrice struct {
 }
 
 // WsMarkPrice handle websocket instrument message
-type WsMarkPriceHandler func(event *WsMarkPricesEvent)
+type WsMarkPricesHandler func(event *WsMarkPricesEvent)
 
 // WsInstruments as per https://www.okex.com/docs-v5/en/#websocket-api-public-channels-instruments-channel
-func WsMarkPricesServe(instId string, handler WsMarkPriceHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+func WsMarkPricesServe(instId string, handler WsMarkPricesHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
 	endpoint := getWsEndpoint(false, simulated)
 	return wsMarkPricesServe(endpoint, instId, handler, errHandler)
 }
 
 // WsInstrumentsServe serve websocket
-func wsMarkPricesServe(endpoint string, instId string, handler WsMarkPriceHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+func wsMarkPricesServe(endpoint string, instId string, handler WsMarkPricesHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	arg := map[string]string{
 		"channel": "mark-price",
 		"instId":  instId,
