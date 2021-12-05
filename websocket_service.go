@@ -102,6 +102,56 @@ func wsInstrumentsServe(endpoint string, instType string, handler WsInstrumentsH
 	return wsServe(cfg, wsHandler, errHandler)
 }
 
+// MARKET PRICE WEBSOCKET (PUBLIC)
+
+// WsMarkPrice define websocket struct event
+type WsMarkPricesEvent struct {
+	Arg  map[string]string    `json:"arg"`
+	Data []*WsInstrumentPrice `json:"data"`
+}
+
+type WsInstrumentPrice struct {
+	InstType  string `json:"instType"`
+	InstId    string `json:"instId"`
+	MarkPrice string `json:"markPx"`
+	Timestamp string `json:"ts"`
+}
+
+// WsMarkPrice handle websocket instrument message
+type WsMarkPriceHandler func(event *WsMarkPricesEvent)
+
+// WsInstruments as per https://www.okex.com/docs-v5/en/#websocket-api-public-channels-instruments-channel
+func WsMarkPricesServe(instId string, handler WsMarkPriceHandler, errHandler ErrHandler, simulated bool) (doneC, stopC chan struct{}, err error) {
+	endpoint := getWsEndpoint(false, simulated)
+	return wsMarkPricesServe(endpoint, instId, handler, errHandler)
+}
+
+// WsInstrumentsServe serve websocket
+func wsMarkPricesServe(endpoint string, instId string, handler WsMarkPriceHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	arg := map[string]string{
+		"channel": "mark-price",
+		"instId":  instId,
+	}
+	var args []map[string]string
+	args = append(args, arg)
+	reqData := ReqData{Op: "subscribe",
+		Args: args,
+	}
+
+	cfg := newWsConfig(endpoint, reqData, "", "", "")
+	wsHandler := func(message []byte) {
+		event := new(WsMarkPricesEvent)
+		err = json.Unmarshal(message, event)
+		if err != nil {
+			errHandler(err)
+			return
+		}
+
+		handler(event)
+	}
+	return wsServe(cfg, wsHandler, errHandler)
+}
+
 // ACCCOUNT WEBSOCKET (PRIVATE)
 
 type WsAccountsEvent struct {
