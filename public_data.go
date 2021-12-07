@@ -33,7 +33,7 @@ func (s *GetInstrumentsService) InstrumentId(instId string) *GetInstrumentsServi
 }
 
 // Do send request
-func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (res *GetTickerServiceResponse, err error) {
+func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (res *GetInstrumentsServiceRespone, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/api/v5/public/instruments",
@@ -52,7 +52,7 @@ func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (
 	if err != nil {
 		return nil, err
 	}
-	res = new(GetTickerServiceResponse)
+	res = new(GetInstrumentsServiceRespone)
 	err = json.Unmarshal(data, res)
 	if err != nil {
 		return nil, err
