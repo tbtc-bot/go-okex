@@ -36,7 +36,7 @@ func (s *GetInstrumentsService) InstrumentId(instId string) *GetInstrumentsServi
 func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (res *GetTickerServiceResponse, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v5/trade/ticker",
+		endpoint: "/api/v5/public/instruments",
 	}
 
 	r.setParam("instId", s.instType)
