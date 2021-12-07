@@ -39,7 +39,7 @@ func (s *GetInstrumentsService) Do(ctx context.Context, opts ...RequestOption) (
 		endpoint: "/api/v5/public/instruments",
 	}
 
-	r.setParam("instId", s.instType)
+	r.setParam("instType", s.instType)
 
 	if s.uly != nil {
 		r.setParam("uly", *s.uly)
