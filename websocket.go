@@ -111,7 +111,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		}()
 		for {
 			_, message, readErr := c.Read(ctx)
-			fmt.Println(string(message))
+			//fmt.Println(string(message))
 			if readErr != nil {
 				if !silent {
 					errHandler(readErr)
