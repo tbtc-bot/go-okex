@@ -205,9 +205,9 @@ func NewClient(apiKey, secretKey, passPhrase string) *Client {
 		SecretKey:  secretKey,
 		PassPhrase: passPhrase,
 		BaseURL:    getAPIEndpoint(),
-		UserAgent:  "Huobi/golang",
+		UserAgent:  "Okex/golang",
 		HTTPClient: http.DefaultClient,
-		Logger:     log.New(os.Stderr, "Huobi-golang ", log.LstdFlags),
+		Logger:     log.New(os.Stderr, "Okex-golang ", log.LstdFlags),
 		Debug:      false,
 		Simulated:  false, // True to enable simulated mode
 	}
