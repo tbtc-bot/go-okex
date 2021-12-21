@@ -421,3 +421,8 @@ func (c *Client) NewGetTickerService() *GetTickerService {
 func (c *Client) NewGetInstrumentsService() *GetInstrumentsService {
 	return &GetInstrumentsService{c: c}
 }
+
+// NewGetInstrumentsService
+func (c *Client) NewGetLeverageService() *GetLeverageService {
+	return &GetLeverageService{c: c}
+}
