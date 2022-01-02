@@ -397,6 +397,11 @@ func (c *Client) NewAmendOrderService() *AmendOrderService {
 	return &AmendOrderService{c: c}
 }
 
+// ClosePositionService
+func (c *Client) NewClosePositionService() *ClosePositionService {
+	return &ClosePositionService{c: c}
+}
+
 // NewPlaceAlgoOrderService
 func (c *Client) NewPlaceAlgoOrderService() *PlaceAlgoOrderService {
 	return &PlaceAlgoOrderService{c: c}
