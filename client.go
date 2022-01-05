@@ -431,3 +431,8 @@ func (c *Client) NewGetInstrumentsService() *GetInstrumentsService {
 func (c *Client) NewGetLeverageService() *GetLeverageService {
 	return &GetLeverageService{c: c}
 }
+
+// GetDeliveryExerciseHistoryService
+func (c *Client) NewGetDeliveryExerciseHistoryService() *GetDeliveryExerciseHistoryService {
+	return &GetDeliveryExerciseHistoryService{c: c}
+}
