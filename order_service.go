@@ -473,6 +473,81 @@ type OrderDetail struct {
 	ReqId   string `json:"reqId"`
 }
 
+// Close position
+type ClosePositionService struct {
+	c       *Client
+	instId  string
+	posSide *string
+	mgnMode string
+	ccy     *string
+}
+
+// Set instrument id
+func (s *ClosePositionService) InstrumentId(instId string) *ClosePositionService {
+	s.instId = instId
+	return s
+}
+
+// Set position side
+func (s *ClosePositionService) PositionSide(posSide string) *ClosePositionService {
+	s.posSide = &posSide
+	return s
+}
+
+// Set margin mode
+func (s *ClosePositionService) MarginMode(mgnMode string) *ClosePositionService {
+	s.mgnMode = mgnMode
+	return s
+}
+
+// Set currency
+func (s *ClosePositionService) Currency(ccy string) *ClosePositionService {
+	s.ccy = &ccy
+	return s
+}
+
+// Do send request
+func (s *ClosePositionService) Do(ctx context.Context, opts ...RequestOption) (res *ClosePositionServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/close-position",
+		secType:  secTypeSigned,
+	}
+
+	r.setBodyParam("instId", s.instId)
+	r.setBodyParam("mgnMode", s.mgnMode)
+
+	if s.posSide != nil {
+		r.setBodyParam("posSide", *s.posSide)
+	}
+	if s.ccy != nil {
+		r.setBodyParam("ccy", *s.ccy)
+	}
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(ClosePositionServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to ClosePositionService
+type ClosePositionServiceResponse struct {
+	Code string                 `json:"code"`
+	Msg  string                 `json:"msg"`
+	Data []*ClosePositionDetail `json:"data"`
+}
+
+type ClosePositionDetail struct {
+	InstId  string `json:"instId"`
+	PosSide string `json:"posSide"`
+}
+
 // PlaceOrderService places a single order
 type PlaceAlgoOrderService struct {
 	c          *Client

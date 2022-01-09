@@ -205,9 +205,9 @@ func NewClient(apiKey, secretKey, passPhrase string) *Client {
 		SecretKey:  secretKey,
 		PassPhrase: passPhrase,
 		BaseURL:    getAPIEndpoint(),
-		UserAgent:  "Huobi/golang",
+		UserAgent:  "Okex/golang",
 		HTTPClient: http.DefaultClient,
-		Logger:     log.New(os.Stderr, "Huobi-golang ", log.LstdFlags),
+		Logger:     log.New(os.Stderr, "Okex-golang ", log.LstdFlags),
 		Debug:      false,
 		Simulated:  false, // True to enable simulated mode
 	}
@@ -397,6 +397,11 @@ func (c *Client) NewAmendOrderService() *AmendOrderService {
 	return &AmendOrderService{c: c}
 }
 
+// ClosePositionService
+func (c *Client) NewClosePositionService() *ClosePositionService {
+	return &ClosePositionService{c: c}
+}
+
 // NewPlaceAlgoOrderService
 func (c *Client) NewPlaceAlgoOrderService() *PlaceAlgoOrderService {
 	return &PlaceAlgoOrderService{c: c}
@@ -425,4 +430,9 @@ func (c *Client) NewGetInstrumentsService() *GetInstrumentsService {
 // NewGetInstrumentsService
 func (c *Client) NewGetLeverageService() *GetLeverageService {
 	return &GetLeverageService{c: c}
+}
+
+// GetDeliveryExerciseHistoryService
+func (c *Client) NewGetDeliveryExerciseHistoryService() *GetDeliveryExerciseHistoryService {
+	return &GetDeliveryExerciseHistoryService{c: c}
 }
