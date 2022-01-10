@@ -69,12 +69,6 @@ func (s *FundTransferService) TransferType(transferType string) *FundTransferSer
 	return s
 }
 
-// Set Loan Transfer
-func (s *FundTransferService) LoanTransfer(loanTrans bool) *FundTransferService {
-	s.loanTrans = &loanTrans
-	return s
-}
-
 // Do send request
 func (s *FundTransferService) Do(ctx context.Context, opts ...RequestOption) (res *FundTransferServiceResponse, err error) {
 	r := &request{
@@ -83,20 +77,23 @@ func (s *FundTransferService) Do(ctx context.Context, opts ...RequestOption) (re
 		secType:  secTypeSigned,
 	}
 
+	r.setBodyParam("ccy", s.ccy)
+	r.setBodyParam("amt", s.amt)
+	r.setBodyParam("from", s.from)
+	r.setBodyParam("to", s.to)
+
 	if s.subAcct != nil {
-		r.setParam("subAcct", *s.subAcct)
+		r.setBodyParam("ccy", *s.subAcct)
 	}
+
 	if s.instId != nil {
-		r.setParam("instId", *s.instId)
+		r.setBodyParam("instId", *s.instId)
 	}
 	if s.toInstId != nil {
-		r.setParam("toInstId", *s.toInstId)
+		r.setBodyParam("toInstId", *s.toInstId)
 	}
 	if s.transferType != nil {
-		r.setParam("transferType", *s.transferType)
-	}
-	if s.loanTrans != nil {
-		r.setParam("loanTrans", *s.loanTrans)
+		r.setBodyParam("transferType", *s.transferType)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)
