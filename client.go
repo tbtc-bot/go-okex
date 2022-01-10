@@ -436,3 +436,8 @@ func (c *Client) NewGetLeverageService() *GetLeverageService {
 func (c *Client) NewGetDeliveryExerciseHistoryService() *GetDeliveryExerciseHistoryService {
 	return &GetDeliveryExerciseHistoryService{c: c}
 }
+
+// NewFundTransferService
+func (c *Client) NewFundTransferService() *FundTransferService {
+	return &FundTransferService{c: c}
+}
