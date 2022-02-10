@@ -9,8 +9,8 @@ import (
 
 // Endpoints
 const (
-	baseWsPublicURL  = "wss://ws.okex.com:8443/ws/v5/public"
-	baseWsPrivateURL = "wss://ws.okex.com:8443/ws/v5/private"
+	baseWsPublicURL  = "wss://ws.okx.com:8443/ws/v5/public"
+	baseWsPrivateURL = "wss://ws.okx.com:8443/ws/v5/private"
 )
 
 var (
