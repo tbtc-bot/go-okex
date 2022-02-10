@@ -91,7 +91,7 @@ func (s *PlaceOrderService) ReduceOnly(reduceOnly bool) *PlaceOrderService {
 }
 
 // Set Quantity Type
-func (s *PlaceOrderService) QuantityType(tgtCcy string) *PlaceOrderService {
+func (s *PlaceOrderService) TargetCurrency(tgtCcy string) *PlaceOrderService {
 	s.tgtCcy = &tgtCcy
 	return s
 }
