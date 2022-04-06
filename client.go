@@ -186,21 +186,20 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	timestamp := IsoTime()
 	queryString := r.query.Encode()
 	body := &bytes.Buffer{}
-	//bodyString := r.form.Encode()
+
 	bodyJson := r.bodyJson
 	header := http.Header{}
+
 	if r.header != nil {
 		header = r.header.Clone()
 	}
-	if bodyJson != nil {
+
+	if bodyJson != nil || r.body != nil {
 		header.Set("Content-Type", "application/json")
 		postBody, _ := json.Marshal(bodyJson)
 		body = bytes.NewBuffer(postBody)
 	}
-	// if bodyString != "" {
-	// 	header.Set("Content-Type", "application/json")
-	// 	body = bytes.NewBufferString(bodyString)
-	// }
+
 	if r.secType == secTypeAPIKey || r.secType == secTypeSigned {
 		header.Set("OK-ACCESS-KEY", c.APIKey)
 		header.Set("OK-ACCESS-PASSPHRASE", c.PassPhrase)
@@ -216,18 +215,20 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 		path = fmt.Sprintf("%s?%s&", r.endpoint, queryString)
 	}
 	c.debug("path:" + path)
+
+	if r.body != nil {
+		body.Reset()
+		body.ReadFrom(r.body)
+	}
 	if r.secType == secTypeSigned {
 		sign, err := Hmac256(timestamp, r.method, path, body, c.SecretKey)
-		// raw := fmt.Sprintf("%s%s%s%s", timestamp, r.method, path, body)
-		// mac := hmac.New(sha256.New, []byte(c.SecretKey))
-		// _, err = mac.Write([]byte(raw))
 		if err != nil {
 			return err
 		}
-		//header.Set("OK-ACCESS-SIGN", base64.StdEncoding.EncodeToString(mac.Sum(nil)))
+
 		header.Set("OK-ACCESS-SIGN", sign)
 		v := url.Values{}
-		// v.Set(signatureKey, fmt.Sprintf("%x", (mac.Sum(nil))))
+
 		if queryString == "" {
 			queryString = v.Encode()
 		} else {
@@ -237,11 +238,12 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	if queryString != "" {
 		fullURL = fmt.Sprintf("%s?%s", fullURL, queryString)
 	}
-	c.debug("full url: %s, body: %s", fullURL, bodyJson)
 
 	r.fullURL = fullURL
 	r.header = header
 	r.body = body
+
+	c.debug("full url: %s, body: %s", fullURL, r.body)
 	return nil
 }
 
@@ -320,6 +322,11 @@ func (c *Client) NewPlaceOrderService() *PlaceOrderService {
 // NewCancelOrderService
 func (c *Client) NewCancelOrderService() *CancelOrderService {
 	return &CancelOrderService{c: c}
+}
+
+// NewCancelMultipleOrdersService
+func (c *Client) NewCancelMultipleOrdersService() *CancelMultipleOrdersService {
+	return &CancelMultipleOrdersService{c: c}
 }
 
 // NewOrderListService

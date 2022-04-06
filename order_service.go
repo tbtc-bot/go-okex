@@ -1,6 +1,7 @@
 package okex
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -206,6 +207,55 @@ func (s *CancelOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 
 // Response to CancelOrderService
 type CancelOrderResponse struct {
+	Code string         `json:"code"`
+	Msg  string         `json:"msg"`
+	Data []*OrderDetail `json:"data"`
+}
+
+//Cancel Multiple orders service
+
+type CancelOrder struct {
+	InstId  string  `json:"instId"`
+	OrdId   *string `json:"ordId,omitempty"`
+	ClOrdId *string `json:"clOrdId,omitempty"`
+}
+
+type CancelMultipleOrdersService struct {
+	c      *Client
+	orders []CancelOrder
+}
+
+// Set orders list
+func (s *CancelMultipleOrdersService) OrderList(orders []CancelOrder) *CancelMultipleOrdersService {
+	s.orders = orders
+	return s
+}
+
+// Do send request
+func (s *CancelMultipleOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *CancelMultipleOrdersResponse, err error) {
+	r := &request{
+		method:   http.MethodPost,
+		endpoint: "/api/v5/trade/cancel-batch-orders",
+		secType:  secTypeSigned,
+	}
+
+	postBody, _ := json.Marshal(s.orders)
+	r.body = bytes.NewBuffer(postBody)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(CancelMultipleOrdersResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Response to CancelMultipleOrdersService
+type CancelMultipleOrdersResponse struct {
 	Code string         `json:"code"`
 	Msg  string         `json:"msg"`
 	Data []*OrderDetail `json:"data"`
