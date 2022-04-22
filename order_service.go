@@ -333,28 +333,28 @@ func (s *OrderListService) Do(ctx context.Context, opts ...RequestOption) (res *
 	// TODO these filters do not work!
 
 	if s.instType != nil {
-		r.setBodyParam("instType", *s.instType)
+		r.setParam("instType", *s.instType)
 	}
 	if s.uly != nil {
-		r.setBodyParam("uly", *s.uly)
+		r.setParam("uly", *s.uly)
 	}
 	if s.instId != nil {
-		r.setBodyParam("instId", *s.instId)
+		r.setParam("instId", *s.instId)
 	}
 	if s.ordType != nil {
-		r.setBodyParam("ordType", string(*s.ordType))
+		r.setParam("ordType", string(*s.ordType))
 	}
 	if s.state != nil {
-		r.setBodyParam("state", *s.state)
+		r.setParam("state", *s.state)
 	}
 	if s.after != nil {
-		r.setBodyParam("after", *s.after)
+		r.setParam("after", *s.after)
 	}
 	if s.before != nil {
-		r.setBodyParam("before", *s.before)
+		r.setParam("before", *s.before)
 	}
 	if s.limit != nil {
-		r.setBodyParam("limit", *s.limit)
+		r.setParam("limit", *s.limit)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)
