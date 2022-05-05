@@ -380,3 +380,69 @@ type LeverageDetail struct {
 	PosSide string `json:"posSide"`
 	Lever   string `json:"lever"`
 }
+
+// GetMaximumLoanService get account balance
+type GetMaximumLoanService struct {
+	c       *Client
+	instId  string
+	mgnMode string
+	mgnCcy  string
+}
+
+// Set currency instId
+func (s *GetMaximumLoanService) InstrumentId(instId string) *GetMaximumLoanService {
+	s.instId = instId
+	return s
+}
+
+// Set currency mgnMode
+func (s *GetMaximumLoanService) ManagementMode(mgnMode string) *GetMaximumLoanService {
+	s.mgnMode = mgnMode
+	return s
+}
+
+// Set currency mgnMode
+func (s *GetMaximumLoanService) ManagementCurrency(mgnCcy string) *GetMaximumLoanService {
+	s.mgnCcy = mgnCcy
+	return s
+}
+
+// Do send request
+func (s *GetMaximumLoanService) Do(ctx context.Context, opts ...RequestOption) (res *GetMaximumLoanServiceResponse, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/api/v5/account/max-loan",
+		secType:  secTypeSigned,
+	}
+
+	r.setParam("instId", s.instId)
+	r.setParam("mgnMode", s.mgnMode)
+	r.setParam("mgnCcy", s.mgnCcy)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(GetMaximumLoanServiceResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Get the maximum loan of instrument response
+type GetMaximumLoanServiceResponse struct {
+	Code string     `json:"code"`
+	Data []*MaxLoan `json:"data"`
+	Msg  string     `json:"msg"`
+}
+
+type MaxLoan struct {
+	InstId  string `json:"instId"`
+	MgnMode string `json:"mgnMode"`
+	MgnCcy  string `json:"mgnCcy"`
+	MaxLoan string `json:"maxLoan"`
+	Ccy     string `json:"ccy"`
+	Side    string `json:"side"`
+}

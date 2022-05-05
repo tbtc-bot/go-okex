@@ -383,3 +383,8 @@ func (c *Client) NewGetDeliveryExerciseHistoryService() *GetDeliveryExerciseHist
 func (c *Client) NewFundTransferService() *FundTransferService {
 	return &FundTransferService{c: c}
 }
+
+// NewFundTransferService
+func (c *Client) NewMaximumLoanService() *GetMaximumLoanService {
+	return &GetMaximumLoanService{c: c}
+}
