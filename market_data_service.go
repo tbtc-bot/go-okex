@@ -32,7 +32,7 @@ func (s *GetTickersService) Do(ctx context.Context, opts ...RequestOption) (res 
 		endpoint: "/api/v5/market/tickers",
 	}
 
-	r.setParam("instId", s.instType)
+	r.setParam("instType", s.instType)
 
 	if s.uly != nil {
 		r.setParam("uly", *s.uly)
