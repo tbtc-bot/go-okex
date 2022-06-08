@@ -10,7 +10,7 @@ import (
 
 ## Setup 
 
-Init client for API services. Get APIKey/SecretKey(Password from your okx account.
+Init client for API services. Get APIKey/SecretKey/Password from your okx account.
 
 
 client := okex.NewClient("apikey", "apisecret", "password")
